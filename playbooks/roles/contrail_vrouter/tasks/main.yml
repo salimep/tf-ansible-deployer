@@ -1,4 +1,9 @@
 ---
+- name: gather statts
+  setup:
+  register: stats
+- set_fact:
+    ansible_os_family: "Rocky"
 - name: "create /etc/contrail/vrouter"
   file:
     path: /etc/contrail/vrouter
@@ -63,12 +68,12 @@
 - name: set vrouter kernel init image name
   set_fact:
     vrouter_kernel_init_img_name: contrail-vrouter-kernel-build-init
-  when: ansible_os_family == 'Debian'
+  when: stats.ansible_facts.ansible_os_family == 'Debian'
 
 - name: set vrouter kernel init image name
   set_fact:
-    vrouter_kernel_init_img_name: contrail-vrouter-kernel-init
-  when: ansible_os_family == 'RedHat'
+    vrouter_kernel_init_img_name: opensdn-vrouter-kernel-init
+  when: stats.ansible_facts.ansible_os_family == 'RedHat'
 
 - name: stop agent and remove old vrouter if kernel-init version changed
   when: roles[instance_name].vrouter.AGENT_MODE is undefined or roles[instance_name].vrouter.AGENT_MODE != 'dpdk'
@@ -113,7 +118,7 @@
     recurse: yes
 
 - name: "start contrail vrouter"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/vrouter
   environment:
     DOCKER_CLIENT_TIMEOUT: '120'
@@ -122,7 +127,7 @@
 
 - name: "Set variables for DPDK plugins"
   set_fact:
-    plugin_os: "{{ 'ubuntu' if (ansible_os_family == 'Debian') else 'redhat' }}"
+    plugin_os: "{{ 'ubuntu' if (stats.ansible_facts.ansible_os_family == 'Debian') else 'redhat' }}"
     mellanox: "{{ true if (roles[instance_name].vrouter.DPDK_UIO_DRIVER is defined
                   and roles[instance_name].vrouter.DPDK_UIO_DRIVER == 'mlnx') else false }}"
     n3000: "{{ true if (roles[instance_name].vrouter.DPDK_UIO_DRIVER is defined
@@ -135,7 +140,7 @@
   when: roles[instance_name].vrouter.AGENT_MODE is defined and roles[instance_name].vrouter.AGENT_MODE == 'dpdk'
 
 - name: "start contrail dpdk vrouter"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/vrouter
   environment:
     DOCKER_CLIENT_TIMEOUT: '120'

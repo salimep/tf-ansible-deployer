@@ -14,7 +14,7 @@
     - cleanup
 
 - name: Stop and remove Vrouter Container and volumes
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/vrouter
     state: absent
     remove_images: all

@@ -1,6 +1,6 @@
 ---
 - name: stop contrail analytics_snmp
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/analytics_snmp
     state: absent
   environment:

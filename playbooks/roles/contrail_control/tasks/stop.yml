@@ -1,6 +1,6 @@
 ---
 - name: "Stop contrail control"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/control
     state: absent
   environment:

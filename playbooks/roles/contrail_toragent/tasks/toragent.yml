@@ -45,7 +45,7 @@
     dest: "/etc/contrail/{{ toragent_name }}/docker-compose.yaml"
 
 - name: "start contrail {{ toragent_name }}"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/{{ toragent_name }}
   environment:
     DOCKER_CLIENT_TIMEOUT: '120'

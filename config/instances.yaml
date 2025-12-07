@@ -1,10 +1,64 @@
+---
+ansible_os_family: 'Rocky'
+ansible_distribution_major_version: "8"
+ansible_distribution: 'Rocky'
+ansible_system: "Linux"
+ansible_interfaces: "eth1"
+global_configuration:
+  CONTAINER_REGISTRY: &CONTAINER_REGISTRY opensdn
+  REGISTRY_PRIVATE_INSECURE: True
 provider_config:
   bms:
+    ssh_pwd: redhat
+    ssh_user: root
+    domainsuffix: local
 instances:
   bms1:
     provider: bms
-    ip: 192.168.1.100
-global_configuration:
-  CONTAINER_REGISTRY: michaelhenkel
+    ip: 192.168.10.20
+    gather_facts: yes
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+  bms2:
+    provider: bms
+    ip: 192.168.10.30
+    roles:
+      vrouter:
+        VROUTER_GATEWAY: 192.168.10.1
+        PHYSICAL_INTERFACE: eth2
 contrail_configuration:
-  CONTRAIL_VERSION: queens-5.0-20180219195722
+  UPDATE_IMAGES: false
+  UPGRADE_KERNEL: true
+  CONTAINER_REGISTRY: opensdn
+  CONTRAIL_VERSION: R25.1-latest
+  CLOUD_ORCHESTRATOR: openstack
+  RABBITMQ_NODE_PORT: 5673
+  VROUTER_GATEWAY: 192.168.10.1
+  PHYSICAL_INTERFACE: enp0s8
+  AUTH_MODE: keystone
+  KEYSTONE_AUTH_HOST: 192.168.10.150
+  KEYSTONE_AUTH_URL_VERSION: /v3
+  KEYSTONE_AUTH_ADMIN_USER: admin
+  KEYSTONE_AUTH_ADMIN_PORT: 5000
+  KEYSTONE_AUTH_ADMIN_PASSWORD: gzbLLh3YOdGoRYQUvnJh7IDrEkszpZiCA7lzJJaJ
+  imageManager_ip: 192.168.10.20
+  computeManager_ip: 192.168.10.20
+  ANALYTICSDB_NODES: 192.168.10.20
+  CONTROLLER_NODES: 192.168.10.20
+  WEBUI_NODES: 192.168.10.20
+  ANALYTICS_NODES: 192.168.10.20
+  CONTROL_NODES: 192.168.10.20
+  CONFIGDB_NODES: 192.168.10.20
+kolla_config:
+  kolla_globals:
+    enable_ironic: no
+    enable_swift: no
+    kolla_internal_vip_address: 192.168.10.150
+    openstack_internal_vip: 192.168.10.150
+  kolla_passwords:
+    keystone_admin_password: gzbLLh3YOdGoRYQUvnJh7IDrEkszpZiCA7lzJJaJ

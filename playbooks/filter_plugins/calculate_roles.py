@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 
 """
 This filter plugin script takes api_server_list and instances file as input and
@@ -16,7 +17,7 @@ class FilterModule(object):
     os_roles = None
 
     # ContrailCluster object
-    contrail_roles = None
+    opensdn_roles = None
 
     indexed_roles = [
         'toragent',
@@ -25,7 +26,7 @@ class FilterModule(object):
     def filters(self):
         return {
             'calculate_openstack_roles': self.calculate_openstack_roles,
-            'calculate_contrail_roles': self.calculate_contrail_roles,
+            'calculate_opensdn_roles': self.calculate_opensdn_roles,
             'extract_roles': self.extract_roles,
             'calculate_deleted_toragent_roles': self.calculate_deleted_toragent_roles
         }
@@ -47,9 +48,9 @@ class FilterModule(object):
         return str({"node_roles_dict": instances,
                     "deleted_nodes_dict": deleted_nodes_dict})
 
-    def calculate_contrail_roles(self, existing_dict, api_server_list,
-                                 instances_dict, global_configuration,
-                                 contrail_configuration, kolla_config, hostvars):
+    def calculate_opensdn_roles(self, existing_dict, api_server_list,
+                                instances_dict, global_configuration,
+                                contrail_configuration, kolla_config, hostvars):
         # don't calculate anything if global_configuration.ENABLE_DESTROY is not set
         empty_result = {"node_roles_dict": dict(),
                         "deleted_nodes_dict": dict(),
@@ -60,9 +61,9 @@ class FilterModule(object):
         if not enable_destroy:
             return str(empty_result)
 
-        self.contrail_roles = ContrailCluster(
+        self.opensdn_roles = ContrailCluster(
             instances_dict, contrail_configuration, kolla_config)
-        instances, deleted_nodes_dict, api_server_ip = self.contrail_roles.discover_contrail_roles()
+        instances, deleted_nodes_dict, api_server_ip = self.opensdn_roles.discover_opensdn_roles()
 
         return str({"node_roles_dict": instances,
                     "deleted_nodes_dict": deleted_nodes_dict,
@@ -566,7 +567,7 @@ class ContrailCluster(object):
 
         return instances, deleted_nodes_dict
 
-    def discover_contrail_roles(self):
+    def discover_opensdn_roles(self):
         instances = {}
         deleted_nodes_dict = {}
         cluster_role_set = set()

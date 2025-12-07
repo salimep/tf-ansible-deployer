@@ -1,6 +1,6 @@
 ---
 - name: stop contrail analytics_alarm
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/analytics_alarm
     state: absent
   environment:

@@ -76,7 +76,7 @@
     dest: "/etc/contrail/control_only_{{ location.key }}/docker-compose.yaml"
 
 - name: "start contrail control {{ location.key }}"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: "/etc/contrail/control_only_{{ location.key }}"
   environment:
     DOCKER_CLIENT_TIMEOUT: '120'

@@ -89,7 +89,7 @@
     dest: "/etc/contrail/control/docker-compose.yaml"
 
 - name: "start contrail control"
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/control
   environment:
     DOCKER_CLIENT_TIMEOUT: '120'

@@ -53,7 +53,18 @@
 
 - set_fact:
     roles: {}
-- name: add roles if defined
+- name: Get all IP addresses
+  debug:
+    msg: "IP: {{ item.value.roles }}"
+  loop: "{{ instances | dict2items }}"
+  loop_control:
+    label: "{{ item.value.ip }}"
+- name : print roles
+  debug:
+    msg: "{{ item}}"
+  with_items:
+    - "{{instances}}"
+- name: add roles if defined############fghjkl;
   set_fact:
     roles: "{{ roles | extract_roles(item) }}"
   when: item.value.roles is defined

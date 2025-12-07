@@ -12,7 +12,7 @@
     - PyYAML
   register: res
   retries: 5
-  until: res is success
+  until: res | success
   when: ansible_os_family == 'RedHat'
 
 # NOTE: Do not use easy_install for RedHat. There is a bug that might cause
@@ -22,7 +22,7 @@
 # Use shell to intall pip for RedHat to work around the bug
 
 - name: check if pip present
-  shell: pip3 --version
+  shell: pip2 --version
   ignore_errors: true
   register: pip_check
 
@@ -35,17 +35,19 @@
         force: yes
         mode: 0400
     - name: Install pip
-      shell: "python3 /tmp/get-pip.py"
+      shell: "python /tmp/get-pip.py 'pip==20.1'"
       become: yes
+      ignore_errors: yes
   when:
     - pip_check.rc != 0
+  ignore_errors: yes
 
 # if pip was already there then it should be updated if it's version is less than 10.0
 # (it doesn't support python2/3 metadata)
 - name: upgrade pip
   pip:
-    name: 'pip>=20'
+    name: 'pip>=19,<21.0'
   become: yes
   register: res
-  retries: 5
-  until: res is success
+    #retries: 5
+    #until: res | success

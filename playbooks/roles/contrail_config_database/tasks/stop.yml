@@ -1,6 +1,6 @@
 ---
 - name: stop contrail config database
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/config_database
     state: absent
   environment:

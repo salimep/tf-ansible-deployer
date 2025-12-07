@@ -21,7 +21,7 @@
     dest: /etc/contrail/analytics_alarm/docker-compose.yaml
 
 - name: start contrail analytics_alarm
-  docker_compose:
+  community.docker.docker_compose_v2:
     project_src: /etc/contrail/analytics_alarm
   environment:
     DOCKER_CLIENT_TIMEOUT: '120'

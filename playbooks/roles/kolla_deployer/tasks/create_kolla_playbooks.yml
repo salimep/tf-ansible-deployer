@@ -33,13 +33,6 @@
     content: "{{ item.value }}"
   with_dict: "{{ kolla_config.customize | default({}) }}"
 
-- name: install python compose
-  pip:
-    name: "docker<7"
-  register: res
-  retries: 5
-  until: res is success
-
 - name: install kolla requirements
   pip:
     requirements: "{{ kolla_dir }}/requirements.txt"
@@ -48,7 +41,9 @@
   until: res is success
 
 - name: install kolla libraries
-  shell: "{{ ansible_python.executable }} setup.py install --force"
-  no_log: true
+  shell: "{{ ansible_facts['python']['executable'] }} setup.py install --force"
+    #shell: "{{ ansible_python.executable }} setup.py install --force"
+  no_log: false
   args:
     chdir: "{{ kolla_dir }}"
+  ignore_errors: yes

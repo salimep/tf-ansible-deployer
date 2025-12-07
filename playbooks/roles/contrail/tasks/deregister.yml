@@ -1,4 +1,10 @@
 ---
+- name: gather stta
+  setup:
+  register: stat
+- name: debug
+  debug:
+    msg: "{{ stat }}"
 - name: deregister contrail toragent - Linux
   include_role:
     name: contrail_toragent
@@ -11,7 +17,7 @@
   when:
     - instance_name in node_roles_dict
     - (toragent_dict != 'vrouter' )
-    - ansible_system == 'Linux'
+    - stat.ansible_facts.ansible_system == 'Linux'
 
 - name: deregister contrail vrouter - Linux
   include_role:
@@ -21,6 +27,6 @@
     - delted_nodes_dict: "{{ deleted_nodes_dict }}"
   when:
     - instance_name in node_roles_dict
-    - ansible_system == 'Linux'
+    - stat.ansible_facts.ansible_system == 'Linux'
   tags:
     - vrouter

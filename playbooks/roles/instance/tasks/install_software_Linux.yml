@@ -42,14 +42,10 @@
 - name: OS specific kernel install, grub modifications, reboot
   include: "{{ ansible_os_family }}_kernel.yml"
 
-- name:
-  package:
-    name: python3-yaml
-    state: absent
-
 - name: install python compose
   pip:
-    name: ['docker-compose==1.24.1', 'pyopenssl==24.0.0']
+    name: docker-compose
+    version: "1.24.1"
   register: res
   retries: 5
   until: res is success
@@ -67,6 +63,7 @@
 - name: Enable bridge-netfilter
   modprobe:
     name: br_netfilter
+  ignore_errors: yes
 
 - name: sysctl -w net.bridge.bridge-nf-call-iptables=1
   shell: sysctl -w net.bridge.bridge-nf-call-iptables=1 && echo "net.bridge.bridge-nf-call-iptables=1" >> /etc/sysctl.conf
