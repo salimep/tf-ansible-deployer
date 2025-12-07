@@ -1,6 +1,6 @@
 ---
 ansible_os_family: 'Rocky'
-ansible_distribution_major_version: "8"
+ansible_distribution_major_version: "9"
 ansible_distribution: 'Rocky'
 ansible_system: "Linux"
 ansible_interfaces: "eth1"
